@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frustração de Expectativa: Comparativo Jurídico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-private: #7c3aed; /* Violet 600 */
+            --color-public: #059669;  /* Emerald 600 */
+            --color-bg: #f8fafc;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-bg); }
+        h1, h2, h3 { font-family: 'Merriweather', serif; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-h: 400px;
+        }
+
+        .tab-active-private { border-bottom: 3px solid var(--color-private); color: var(--color-private); font-weight: 700; }
+        .tab-active-public { border-bottom: 3px solid var(--color-public); color: var(--color-public); font-weight: 700; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 1);
+        }
+        
+        .step-node {
+            transition: all 0.3s ease;
+        }
+        .step-node:hover {
+            transform: scale(1.02);
+        }
+    </style>
+    <!-- Chosen Palette: Professional Slate with Violet (Private) and Emerald (Public) accents -->
+    <!-- Application Structure Plan: 
+         A aplicação foi desenhada como um Painel de Controlo Jurídico. 
+         1. Radar de Princípios: Visualização imediata da diferença de peso entre Autonomia e Legalidade.
+         2. Matriz Isomórfica: Navegação por abas para comparar os campos idênticos do relatório (Enquadramento, Normas, Provas, Efeitos).
+         3. Estrategista de Provas: Checklist interativo para auditoria de documentos.
+         4. Roteiro de Diagnóstico: Fluxograma lógico para tomada de decisão.
+    -->
+    <!-- Visualization & Content Choices:
+         - Chart.js Radar: Para representar a tensão entre princípios.
+         - Grid Layout: Para garantir que os campos comparados fiquem sempre lado a lado (isomorfia).
+         - Interactive Steps: Para transformar a Seção 3 do relatório num guia acionável.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="text-slate-900 pb-20">
+
+    <!-- Navegação -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold tracking-tighter text-slate-800">LEX<span class="text-violet-600">COMPARE</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-600">
+                <a href="#principios" class="hover:text-violet-600 transition">Princípios</a>
+                <a href="#comparador" class="hover:text-violet-600 transition">Comparador</a>
+                <a href="#diagnostico" class="hover:text-violet-600 transition">Diagnóstico</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="py-16 px-6 bg-gradient-to-b from-white to-slate-50">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-slate-900">Frustração de Expectativa</h1>
+            <p class="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+                Análise técnica e estrutural sobre a transposição de conceitos entre o Direito Civil e o Direito Administrativo sob a ótica da confiança legítima.
+            </p>
+            <div class="flex flex-wrap justify-center gap-6">
+                <div class="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full bg-violet-100 text-violet-700">
+                    <span>●</span> Relação Privada (CC)
+                </div>
+                <div class="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full bg-emerald-100 text-emerald-700">
+                    <span>●</span> Relação Pública (ADM)
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 space-y-16">
+
+        <!-- Seção: Pesos Principiológicos -->
+        <section id="principios" class="scroll-mt-20">
+            <div class="glass-card rounded-3xl p-8 shadow-sm">
+                <div class="mb-8 text-center">
+                    <h2 class="text-2xl font-bold mb-2">O Equilíbrio de Forças</h2>
+                    <p class="text-slate-500 text-sm">Visualização qualitativa dos pilares que sustentam cada regime jurídico.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="principleChart"></canvas>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 mt-8 text-sm leading-relaxed">
+                    <div class="p-4 rounded-xl bg-violet-50/50 border border-violet-100">
+                        <strong class="block text-violet-700 mb-1">Foco Privado:</strong>
+                        A confiança é baseada na autonomia da vontade e nos deveres anexos de lealdade e informação entre iguais.
+                    </div>
+                    <div class="p-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
+                        <strong class="block text-emerald-700 mb-1">Foco Público:</strong>
+                        A confiança é limitada pela estrita legalidade. O Estado protege a estabilidade, mas não valida atos contra a lei.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Comparador Isomórfico -->
+        <section id="comparador" class="scroll-mt-20">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">Matriz Isomórfica</h2>
+                    <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-bold">
+                        <button onclick="switchTab('enquadramento')" id="btn-enquadramento" class="px-4 py-2 rounded-md transition bg-white shadow-sm">Enquadramento</button>
+                        <button onclick="switchTab('normas')" id="btn-normas" class="px-4 py-2 rounded-md transition">Normas</button>
+                        <button onclick="switchTab('provas')" id="btn-provas" class="px-4 py-2 rounded-md transition">Provas</button>
+                        <button onclick="switchTab('efeitos')" id="btn-efeitos" class="px-4 py-2 rounded-md transition">Efeitos/Remédios</button>
+                    </div>
+                </div>
+
+                <div id="content-container" class="grid md:grid-cols-2 gap-6">
+                    <!-- Dinamicamente preenchido pelo JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Checklist de Instrução -->
+        <section class="bg-slate-900 rounded-3xl p-8 text-white">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6 text-center">Checklist de Instrução Probatória</h2>
+                <p class="text-slate-400 text-center mb-10 text-sm">Selecione o regime para visualizar os elementos essenciais de prova conforme o relatório.</p>
+                
+                <div class="flex justify-center mb-8 gap-4">
+                    <button onclick="setChecklist('privado')" id="check-priv-btn" class="px-6 py-2 rounded-full border-2 border-violet-500 text-violet-400 font-bold hover:bg-violet-500 hover:text-white transition">Privado (CC)</button>
+                    <button onclick="setChecklist('publico')" id="check-pub-btn" class="px-6 py-2 rounded-full border-2 border-emerald-500 text-emerald-400 font-bold hover:bg-emerald-500 hover:text-white transition">Público (ADM)</button>
+                </div>
+
+                <div id="checklist-grid" class="grid md:grid-cols-2 gap-4">
+                    <!-- Dinamicamente preenchido -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Roteiro de Diagnóstico -->
+        <section id="diagnostico" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold mb-8 text-center">Roteiro Operacional de Diagnóstico</h2>
+            <div class="flex flex-col items-center gap-4">
+                <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex items-start gap-4 step-node">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 font-bold">1</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 mb-1">Qualificação da Expectativa</h4>
+                        <p class="text-sm text-slate-600">Defina se a expectativa é juridicamente protegível (boa-fé/confiança legítima) ou mera expectativa contra legem.</p>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-slate-300"></div>
+                <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex items-start gap-4 step-node">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 font-bold">2</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 mb-1">Verificação da Conduta</h4>
+                        <p class="text-sm text-slate-600">Houve conduta formal/competente (ADM) ou padrão de comportamento (CC) apto a gerar confiança?</p>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-slate-300"></div>
+                <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex items-start gap-4 step-node">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 font-bold">3</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 mb-1">Nexo e Investimento</h4>
+                        <p class="text-sm text-slate-600">Comprove a boa-fé e o investimento real (danos emergentes, custos de oportunidade) realizados com base na confiança.</p>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-slate-300"></div>
+                <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex items-start gap-4 step-node">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 font-bold">4</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 mb-1">Seleção do Remédio</h4>
+                        <p class="text-sm text-slate-600">Escolha entre Reparação Integral, Interesse Negativo, Modulação de Efeitos ou Transição (LINDB).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 py-10 border-t border-slate-200 text-center text-slate-400 text-xs">
+        <p>Desenvolvido com base no Relatório de Estruturação Comparativa Isomórfica.</p>
+        <p class="mt-2">Utilize com rigor técnico. Termos de acordo com o CC e a LINDB.</p>
+    </footer>
+
+    <script>
+        // Dados do Relatório
+        const legalData = {
+            enquadramento: {
+                private: {
+                    title: "Linguagem Descritiva",
+                    items: ["Violação de boa-fé objetiva", "Responsabilidade pré-contratual (Culpa in contrahendo)", "Perda de uma chance (expectativa séria)", "Inadimplemento contratual"]
+                },
+                public: {
+                    title: "Categorias Próprias",
+                    items: ["Segurança jurídica e confiança legítima", "Responsabilidade Civil do Estado (Art. 37, §6º)", "Direito Adquirido vs Mera Expectativa", "Ilicitude qualificada"]
+                }
+            },
+            normas: {
+                private: {
+                    title: "Núcleo CC",
+                    items: ["Art. 113: Interpretação boa-fé", "Art. 187: Abuso de direito", "Art. 422: Boa-fé objetiva", "Art. 389: Perdas e danos"]
+                },
+                public: {
+                    title: "Núcleo ADM",
+                    items: ["Art. 37 CF: Legalidade e Impessoalidade", "Lei 9.784: Decadência (Art. 54)", "LINDB Arts 20-30: Consequencialismo", "Art. 5, XXXVI CF: Ato jurídico perfeito"]
+                }
+            },
+            provas: {
+                private: {
+                    title: "Trilhas Documentais",
+                    items: ["E-mails, mensagens, minutas", "Propostas e 'Sinal Verde'", "Cronogramas e ordens de início", "Padrão de comportamento reiterado"]
+                },
+                public: {
+                    title: "Atos e Formalidade",
+                    items: ["Atos formais (Portarias, Despachos)", "Pareceres vinculantes", "Materialidade e autoria institucional", "Competência do agente subscritor"]
+                }
+            },
+            efeitos: {
+                private: {
+                    title: "Remédios Típicos",
+                    items: ["Indenização interesse negativo (gastos)", "Perdas e danos (inadimplemento)", "Indenização pela chance perdida", "Reembolso de investimentos"]
+                },
+                public: {
+                    title: "Soluções de Estabilidade",
+                    items: ["Manutenção excepcional de efeitos", "Modulação de efeitos (Segurança)", "Regimes de transição (LINDB)", "Indenização apenas por ilicitude"]
+                }
+            }
+        };
+
+        const checklists = {
+            privado: [
+                { label: "Geração da confiança", desc: "Registros de reuniões, aprovações informais e 'sinal verde'." },
+                { label: "Qualificação Jurídica", desc: "Identificar se era oferta, promessa ou tratativa avançada." },
+                { label: "Ruptura Injustificada", desc: "Data e motivo da interrupção sem base objetiva." },
+                { label: "Investimento Comprovado", desc: "Recibos de gastos, desistência de outros negócios." }
+            ],
+            publico: [
+                { label: "Ato Gerador", desc: "Ato administrativo formal ou orientação oficial escrita." },
+                { label: "Aparência de Legitimidade", desc: "Verificar se o ato parecia decisório ao administrado." },
+                { label: "Conformidade Legal", desc: "Análise se a expectativa não era frontalmente contra legem." },
+                { label: "Boa-fé do Administrado", desc: "Ausência de fraude ou ciência da precariedade do ato." }
+            ]
+        };
+
+        // Estado da App
+        let activeTab = 'enquadramento';
+
+        // Inicialização do Radar Chart
+        function initChart() {
+            const ctx = document.getElementById('principleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Legalidade Estrita', 'Autonomia Privada', 'Boa-fé Objetiva', 'Segurança Jurídica', 'Responsabilidade'],
+                    datasets: [
+                        {
+                            label: 'Relação Privada (CC)',
+                            data: [40, 95, 90, 70, 85],
+                            backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                            borderColor: 'rgba(124, 58, 237, 1)',
+                            pointBackgroundColor: 'rgba(124, 58, 237, 1)',
+                        },
+                        {
+                            label: 'Relação Pública (ADM)',
+                            data: [98, 30, 75, 95, 90],
+                            backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                            borderColor: 'rgba(5, 150, 105, 1)',
+                            pointBackgroundColor: 'rgba(5, 150, 105, 1)',
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // Troca de Abas
+        function switchTab(tabId) {
+            activeTab = tabId;
+            const buttons = ['enquadramento', 'normas', 'provas', 'efeitos'];
+            buttons.forEach(b => {
+                document.getElementById(`btn-${b}`).className = 'px-4 py-2 rounded-md transition';
+            });
+            document.getElementById(`btn-${tabId}`).className = 'px-4 py-2 rounded-md transition bg-white shadow-sm font-bold text-slate-900';
+            renderContent();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('content-container');
+            const data = legalData[activeTab];
+            
+            container.innerHTML = `
+                <div class="glass-card rounded-2xl p-6 border-l-4 border-l-violet-600 animate-in fade-in duration-500">
+                    <h3 class="text-violet-700 font-bold mb-4 uppercase tracking-wider text-xs">${data.private.title}</h3>
+                    <ul class="space-y-3">
+                        ${data.private.items.map(item => `
+                            <li class="flex items-start gap-3 text-sm text-slate-700">
+                                <span class="text-violet-500 mt-1">▹</span>
+                                ${item}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <div class="glass-card rounded-2xl p-6 border-l-4 border-l-emerald-600 animate-in fade-in duration-500">
+                    <h3 class="text-emerald-700 font-bold mb-4 uppercase tracking-wider text-xs">${data.public.title}</h3>
+                    <ul class="space-y-3">
+                        ${data.public.items.map(item => `
+                            <li class="flex items-start gap-3 text-sm text-slate-700">
+                                <span class="text-emerald-500 mt-1">▹</span>
+                                ${item}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function setChecklist(type) {
+            const grid = document.getElementById('checklist-grid');
+            const btnPriv = document.getElementById('check-priv-btn');
+            const btnPub = document.getElementById('check-pub-btn');
+            
+            if (type === 'privado') {
+                btnPriv.className = "px-6 py-2 rounded-full bg-violet-500 text-white font-bold transition";
+                btnPub.className = "px-6 py-2 rounded-full border-2 border-emerald-500 text-emerald-400 font-bold transition";
+            } else {
+                btnPub.className = "px-6 py-2 rounded-full bg-emerald-500 text-white font-bold transition";
+                btnPriv.className = "px-6 py-2 rounded-full border-2 border-violet-500 text-violet-400 font-bold transition";
+            }
+
+            grid.innerHTML = checklists[type].map(item => `
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-slate-500 transition cursor-default">
+                    <h5 class="font-bold text-white mb-1 text-sm">${item.label}</h5>
+                    <p class="text-xs text-slate-400">${item.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = () => {
+            initChart();
+            switchTab('enquadramento');
+            setChecklist('privado');
+        };
+    </script>
+</body>
+</html>
